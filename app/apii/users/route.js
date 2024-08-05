@@ -6,21 +6,22 @@ export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db('cellcluster');
-    const data = await db.collection('users').find().toArray(); // Fetch all users
-    const totalItems = data.length; // Calculate total items (users count)
+    const data = await db.collection('users').find().toArray();
+    const totalItems = data.length;
     
     return new Response(JSON.stringify({ data, totalItems }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    logger.error('Error fetching users in GET route:', error.message, { stack: error.stack }); // Improved logging
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+    logger.error('Error fetching users in GET route:', error.message, { stack: error.stack, error });
+    return new Response(JSON.stringify({ error: 'Internal Server Error', message: error.message, stack: error.stack }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
   }
 }
+
 
 export async function POST(req) {
   try {
